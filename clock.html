@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 15px;
+        }
+
+        .circle {
+            background-color: green;
+            width: 60px;
+            height: 60px;
+            position: absolute;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 30px;
+        }
+
+        .p {
+            margin: 14px;
+        }
+
+        .yelow-circle {
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background-color: rgb(236, 224, 45);
+        }
+
+
+        .line {
+            border: 1px blue solid;
+            position: absolute;
+            z-index: 1;
+            transform-origin: 0 0;
+            background-color: blue;
+        }
+
+        .lineHour {
+            border: 3px black solid;
+            position: absolute;
+            z-index: 1;
+            transform-origin: 0 0;
+            background-color: black;
+        }
+
+        .lineMinute {
+            border: 2px red solid;
+            position: absolute;
+            z-index: 1;
+            transform-origin: 0 0;
+            background-color: red;
+        }
+
+        label {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <script>
+        
+        var body = document.body;
+        yelow = document.createElement("div");                              //создаем желтый циферблат
+        yelow.className = "yelow-circle";
+        body.appendChild(yelow);
+
+        (function greenCreate() {
+            for (var j = 0; j < 12; j++) {
+                var green = document.createElement("div");                  //создаем зеленые кружки c цифрами                                
+                green.className = "circle";
+                var p = document.createElement("p");
+                p.className = "p";
+                p.textContent = j + 1;
+                body.appendChild(green);
+                green.appendChild(p);
+            }
+        }())
+
+        const lineSecond = document.createElement("div");
+        lineSecond.className = "line";                                            //создаем линию секундную
+        body.appendChild(lineSecond);
+
+        const lineHour = document.createElement("div");
+        lineHour.className = "lineHour";                                            //создаем линию часовую
+        body.appendChild(lineHour);
+
+        const lineMinute = document.createElement("div");
+        lineMinute.className = "lineMinute";                                            //создаем линию минутную
+        body.appendChild(lineMinute);
+
+        let green;
+        for (let i = 2; i < 14; i++) {
+            green = document.querySelector("body > div:nth-child(" + i + ")");
+        }
+
+        function setPosition(event) {
+
+            var radiusGreen = 200;
+            var yelowCenterX = yelow.offsetLeft + yelow.offsetWidth / 2;
+            var yelowCenterY = yelow.offsetTop + yelow.offsetHeight / 2;
+
+            for (let g = 2, k = 0; g < 14, k <= 360; g++, k = k + 30) {
+                var angleGreen = parseFloat(k) / 180 * Math.PI;
+                var greenCenterX = yelowCenterX + radiusGreen * Math.sin(angleGreen);
+                var greenCenterY = yelowCenterY - radiusGreen * Math.cos(angleGreen);
+                document.querySelector("body > div:nth-child(" + g + ")").style.left = Math.round(greenCenterX - green.offsetWidth / 2) + "px";
+                document.querySelector("body > div:nth-child(" + g + ")").style.top = Math.round(greenCenterY - green.offsetHeight / 2) + "px";
+            }
+
+            function clock() {
+                var h;
+                var m;
+                var s;
+                var date = new Date(),
+                    h = date.getHours();
+                m = date.getMinutes();
+                s = date.getSeconds();
+                var hour = h * 30;
+                var minute = m * 6;
+                var second = s * 6;
+
+                lineSecond.style.width = 200 + "px";
+                lineSecond.style.left = yelowCenterY + "px";
+                lineSecond.style.top = yelowCenterX + "px";
+                lineSecond.style.transform = "rotate(" + (second - 90) + "deg)";
+
+                lineHour.style.width = 100 + "px";
+                lineHour.style.left = yelowCenterY + "px";
+                lineHour.style.top = yelowCenterX + 2 + "px";
+                lineHour.style.transform = "rotate(" + (hour - 90) + "deg)";
+
+                lineMinute.style.width = 150 + "px";
+                lineMinute.style.left = yelowCenterY - 2 + "px";
+                lineMinute.style.top = yelowCenterX  + "px";
+                lineMinute.style.transform = "rotate(" + (minute - 90) + "deg)";
+            }
+            clock()
+            let timerID = setInterval(clock, 1000);
+        }
+        setPosition(event);
+        
+    </script>
+
+</body>
+
+</html>
